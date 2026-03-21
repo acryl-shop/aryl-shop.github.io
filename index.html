@@ -10,6 +10,26 @@ label { display:block; margin-top:10px; font-weight:bold; }
 input, select { width:100%; padding:8px; margin-top:4px; border:1px solid #ccc; box-sizing:border-box; }
 #result { margin-top:20px; font-size:1.5em; color:#111; }
 .notice { color:red; font-size:13px; margin-top:10px; font-weight:bold; }
+
+.item {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+.item select,
+.item input {
+  flex: 1;
+  min-width: 70px;
+}
+.item .linePrice {
+  min-width: 90px;
+  text-align: right;
+  font-weight: bold;
+}
+.item button {
+  flex: none;
+}
 </style>
 </head>
 <body>
@@ -23,42 +43,80 @@ input, select { width:100%; padding:8px; margin-top:4px; border:1px solid #ccc; 
   <img id="colorPreview" src="" alt="색상 미리보기" style="width:180px; height:auto; display:none; margin:0 auto;">
 </div>
 
-<label>색상</label>
-<select id="color">
-  <option value="" selected disabled>색상 선택</option>
-  <option value="clear">투명</option>
-  <option value="white">흰색</option>
-  <option value="black">검정</option>
-  <option value="red">빨강</option>
-  <option value="orange">주황</option>
-  <option value="yellow">노랑</option>
-  <option value="green">초록</option>
-  <option value="yellowgreen">연두</option>
-  <option value="blue">파랑</option>
-  <option value="skyblue">하늘</option>
-  <option value="pink">분홍</option>
-  <option value="gray">회색</option>
-</select>
+<button onclick="addItem()" style="margin-top:10px; width:100%; padding:10px;">
++ 아크릴판 재단 견적 추가
+</button>
+<div id="items"></div>
 
-<label>두께 선택</label>
-<select id="thick" disabled>
-  <option value="2T">2T</option>
-  <option value="3T" selected>3T</option>
-  <option value="5T">5T</option>
-  <option value="8T">8T</option>
-  <option value="10T">10T</option>
-  <option value="15T">15T</option>
-  <option value="20T">20T</option>
-</select>
+<fieldset id="extras" style="margin-top:30px; border:1px solid #ccc; border-radius:8px; padding:18px 16px 14px 16px;">
+  <legend style="font-size:1.08em; font-weight:bold; padding:0 10px;">DIY 추가상품</legend>
+  <style>
+  #extras {
+    display: block;
+    margin-top: 0 !important;
+  }
+  #extras .extra-main-row {
+    margin-bottom: 6px;
+  }
+  #extras .extra-expand-list {
+    display: none;
+    margin-top: 6px;
+    padding-left: 0;
+  }
+  #extras .extra-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: normal;
+    margin-bottom: 2px;
+  }
+  #extras button.addExtraBtn {
+    padding: 4px 10px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    background: #f6f6f6;
+    cursor: pointer;
+    font-size: 0.98em;
+  }
+  #extras .extra-expand-list .extra-row:last-child {
+    margin-bottom: 0;
+  }
+  </style>
+  <div class="extra-main-row">
+    <button type="button" id="toggleExtraListBtn" class="addExtraBtn" style="width:100%;font-weight:bold;">
+      DIY 추가상품 선택하기 ▼
+    </button>
+  </div>
+  <div class="extra-expand-list" id="extraExpandList">
+    <div class="extra-row"><span>아크릴 접착제(주사기 포함) (2,000원)</span>
+      <button type="button" class="addExtraBtn" data-name="아크릴 접착제(주사기 포함)" data-price="2000">+ 추가</button>
+    </div>
+    <div class="extra-row"><span>아크릴 경첩(소) (600원)</span>
+      <button type="button" class="addExtraBtn" data-name="아크릴 경첩(소)" data-price="600">+ 추가</button>
+    </div>
+    <div class="extra-row"><span>아크릴 경첩(중) (800원)</span>
+      <button type="button" class="addExtraBtn" data-name="아크릴 경첩(중)" data-price="800">+ 추가</button>
+    </div>
+    <div class="extra-row"><span>아크릴 경첩(대) (1,000원)</span>
+      <button type="button" class="addExtraBtn" data-name="아크릴 경첩(대)" data-price="1000">+ 추가</button>
+    </div>
+    <div class="extra-row"><span>아크릴 자석 (1,500원)</span>
+      <button type="button" class="addExtraBtn" data-name="아크릴자석" data-price="1500">+ 추가</button>
+    </div>
+    <div class="extra-row"><span>아크릴 열쇠고리 (1,000원)</span>
+      <button type="button" class="addExtraBtn" data-name="아크릴 열쇠고리" data-price="1000">+ 추가</button>
+    </div>
+    <div class="extra-row"><span>아크릴 칼 (3,300원)</span>
+      <button type="button" class="addExtraBtn" data-name="아크릴 칼" data-price="3300">+ 추가</button>
+    </div>
+    <div class="extra-row"><span>아크릴 손잡이 (600원)</span>
+      <button type="button" class="addExtraBtn" data-name="아크릴 손잡이" data-price="600">+ 추가</button>
+    </div>
+  </div>
+</fieldset>
 
-<label>가로(mm)</label>
-<input type="number" id="w" placeholder="최대 1200" max="1200">
+<div id="extraItems"></div>
 
-<label>세로(mm)</label>
-<input type="number" id="h" placeholder="최대 2400" max="2400">
-
-<label>수량</label>
-<input type="number" id="qty" value="1" min="1">
 
 <div class="notice">
 ※ 재단 사이즈는 100mm 단위로 올림 계산됩니다.<br>
@@ -67,57 +125,101 @@ input, select { width:100%; padding:8px; margin-top:4px; border:1px solid #ccc; 
 ※ 2T 아크릴은 투명/화이트만 1200×2400mm 제작 가능하며, 그 외 색상은 최대 850×1750mm까지만 제작됩니다.
 </div>
 
-<h2 id="result">0 원</h2>
+<h2 id="result">총합 가격: 0 원</h2>
+<button onclick="sendEmail()" style="margin-top:10px; width:100%; padding:12px; font-size:16px;">
+견적 메일 보내기
+</button>
+<div class="notice" style="margin-top:5px; font-size:14px;">※ 배송비 별도</div>
 
 <script>
-function calcPrice() {
-  let w = parseFloat(document.getElementById('w').value) || 0;
-  let h = parseFloat(document.getElementById('h').value) || 0;
+function addItem() {
+  const div = document.createElement('div');
+  div.className = 'item';
+  div.style.border = '1px solid #ddd';
+  div.style.padding = '10px';
+  div.style.marginTop = '10px';
 
-  // 최대 사이즈 제한
-  if (w > 1200) {
-    w = 1200;
-    document.getElementById('w').value = 1200;
-  }
+  div.innerHTML = `
+    <select class="color">
+      <option value="" selected disabled>색상</option>
+      <option value="clear">투명</option>
+      <option value="white">흰색</option>
+      <option value="black">검정</option>
+      <option value="red">빨강</option>
+      <option value="orange">주황</option>
+      <option value="yellow">노랑</option>
+      <option value="green">초록</option>
+      <option value="yellowgreen">연두</option>
+      <option value="blue">파랑</option>
+      <option value="skyblue">하늘</option>
+      <option value="pink">분홍</option>
+      <option value="gray">회색</option>
+    </select>
 
-  if (h > 2400) {
-    h = 2400;
-    document.getElementById('h').value = 2400;
-  }
+    <select class="thick">
+      <option value="2T">2T</option>
+      <option value="3T" selected>3T</option>
+      <option value="5T">5T</option>
+      <option value="8T">8T</option>
+      <option value="10T">10T</option>
+      <option value="15T">15T</option>
+      <option value="20T">20T</option>
+    </select>
 
-  const q = parseFloat(document.getElementById('qty').value) || 1;
-  const c = document.getElementById('color').value;
-  const thick = document.getElementById('thick').value;
+    <input type="number" class="w" placeholder="가로(mm)">
+    <input type="number" class="h" placeholder="세로(mm)">
+    <input type="number" class="qty" value="1" min="1">
 
-  // 입력 예시(placeholder) 동적 변경
-  const wInput = document.getElementById('w');
-  const hInput = document.getElementById('h');
+    <div class="linePrice">0원</div>
 
-  if (thick === '2T' && c && c !== 'clear' && c !== 'white') {
-    wInput.placeholder = '최대 값 850mm';
-    hInput.placeholder = '최대 값 1750mm';
-  } else {
-    wInput.placeholder = '최대 값 1200mm';
-    hInput.placeholder = '최대 값 2400mm';
-  }
+    <button onclick="this.parentElement.remove(); calcTotal()">삭제</button>
+  `;
 
-  // 2T 유색 아크릴 사이즈 제한 (850 x 1750)
-  if (thick === '2T' && c && c !== 'clear' && c !== 'white') {
-    if (w > 850) {
-      w = 850;
-      document.getElementById('w').value = 850;
+  document.getElementById('items').appendChild(div);
+
+  div.querySelectorAll('input, select').forEach(el => {
+    el.addEventListener('input', calcTotal);
+  });
+
+  // Color-thickness restriction binding:
+  const colorEl = div.querySelector('.color');
+  const thickEl = div.querySelector('.thick');
+
+  function updateThick() {
+    const c = colorEl.value;
+    const prev = thickEl.value;
+
+    const all = ['2T','3T','5T','8T','10T','15T','20T'];
+    let filtered = all;
+
+    if (c === 'clear') {
+      filtered = all;
+    } else if (c === 'white' || c === 'black') {
+      filtered = all.filter(v => v !== '15T' && v !== '20T');
+    } else if (c) {
+      filtered = ['2T','3T','5T'];
     }
-    if (h > 1750) {
-      h = 1750;
-      document.getElementById('h').value = 1750;
+
+    thickEl.innerHTML = '';
+    filtered.forEach(v => {
+      const opt = document.createElement('option');
+      opt.value = v;
+      opt.textContent = v;
+      thickEl.appendChild(opt);
+    });
+
+    if ([...thickEl.options].some(o => o.value === prev)) {
+      thickEl.value = prev;
     }
   }
 
-  // 사이즈 미입력 시 '0 원'으로 표시
-  if (!w || !h) {
-    document.getElementById('result').innerText = '0 원';
-    return;
-  }
+  colorEl.addEventListener('change', () => {
+    updateThick();
+    calcTotal();
+  });
+}
+
+function calcSingle(w, h, q, thick) {
 
   // 2T 배열
   const t2 = [
@@ -341,108 +443,228 @@ const t20 = [
   let base = t[row][col];
   let price = base * q;
 
-  document.getElementById('result').innerText = price.toLocaleString() + ' 원';
+  return price;
 }
 
-// 두께 옵션 동적 제어 함수 (색상 변경 시 두께 옵션 제한)
-function updateThickOptionsForColor() {
-  const colorSelect = document.getElementById('color');
-  const thickSelect = document.getElementById('thick');
-  const color = colorSelect.value;
-  const prevThick = thickSelect.value;
-  // 두께 옵션 전체 목록
-  const allThick = [
-    {value:'2T', text:'2T'},
-    {value:'3T', text:'3T'},
-    {value:'5T', text:'5T'},
-    {value:'8T', text:'8T'},
-    {value:'10T', text:'10T'},
-    {value:'15T', text:'15T'},
-    {value:'20T', text:'20T'}
-  ];
-  // 색상별 두께 제한
-  let filtered;
+function calcTotal() {
+  let total = 0;
+  const items = document.querySelectorAll('.item');
 
-  if (color === 'clear') {
-    // 투명 → 모든 두께
-    filtered = allThick;
+  items.forEach(item => {
+    let wInput = item.querySelector('.w');
+    let hInput = item.querySelector('.h');
 
-  } else if (color === 'white' || color === 'black') {
-    // 화이트 / 블랙 → 10T까지
-    filtered = allThick.filter(t => t.value !== '15T' && t.value !== '20T');
+    let w = wInput ? (parseFloat(wInput.value) || 0) : 0;
+    let h = hInput ? (parseFloat(hInput.value) || 0) : 0;
 
-  } else if (color) {
-    // 기타 색상 → 2T ~ 5T
-    filtered = allThick.filter(t =>
-      t.value === '2T' || t.value === '3T' || t.value === '5T'
-    );
+    const colorEl = item.querySelector('.color');
+    const thickEl = item.querySelector('.thick');
+    const color = colorEl ? colorEl.value : "";
+    const thick = thickEl ? thickEl.value : "";
 
-  } else {
-    filtered = allThick;
-  }
-  // 옵션 재구성
-  thickSelect.innerHTML = '';
-  filtered.forEach(t => {
-    const opt = document.createElement('option');
-    opt.value = t.value;
-    opt.textContent = t.text;
-    thickSelect.appendChild(opt);
+    // ===== 가로/세로 방향 보정 =====
+    // 삭제 (더 이상 가로 > 세로 강제 변환하지 않음)
+
+    // ===== 가로/세로 최대치 =====
+    let maxW = 1200; // 가로 최대
+    let maxH = 2400; // 세로 최대
+
+    // ===== 2T 특수 제한 =====
+    if (thick === '2T') {
+      if (color === 'clear' || color === 'white') {
+        maxW = 1200;
+        maxH = 2400;
+      } else {
+        maxW = 850;
+        maxH = 1750;
+      }
+    }
+
+    // ===== 가로 제한 =====
+    if (w > maxW) {
+      w = maxW;
+      if (wInput) wInput.value = maxW;
+    }
+
+    // ===== 세로 제한 =====
+    if (h > maxH) {
+      h = maxH;
+      if (hInput) hInput.value = maxH;
+    }
+
+    // ===== 면적 제한 =====
+    const maxArea = maxW * maxH;
+    if ((w * h) > maxArea) {
+      h = Math.floor(maxArea / w);
+      if (hInput) hInput.value = h;
+    }
+
+    const qtyEl = item.querySelector('.qty');
+    const q = qtyEl ? (parseFloat(qtyEl.value) || 1) : 1;
+    const priceEl = item.querySelector('.linePrice');
+
+    let line = 0;
+
+    // 일반 견적(판재)
+    if (w && h && thick) {
+      line = calcSingle(w, h, q, thick);
+      total += line;
+    }
+
+    // DIY 추가상품(추가)
+    if (item.classList.contains('extraItem')) {
+      const extraQty = item.querySelector('.extraQty');
+      const price = parseInt(item.dataset.price);
+      const qty = parseInt(extraQty.value) || 1;
+      line = price * qty;
+      total += line;
+      if (priceEl) priceEl.innerText = line ? line.toLocaleString() + ' 원' : '0원';
+      return;
+    }
+
+    if (priceEl) {
+      priceEl.innerText = line ? line.toLocaleString() + ' 원' : '0원';
+    }
   });
-  // 이전 두께 유지(가능하면), 아니면 첫 번째 옵션
-  if ([...thickSelect.options].some(opt => opt.value === prevThick)) {
-    thickSelect.value = prevThick;
-  } else {
-    thickSelect.selectedIndex = 0;
-  }
+
+  document.getElementById('result').innerText = '총합 가격: ' + total.toLocaleString() + ' 원';
 }
 
-// 입력 이벤트 연결
-['w','h','qty'].forEach(id => {
-  document.getElementById(id).addEventListener('input', calcPrice);
-});
+function sendEmail() {
+  const items = document.querySelectorAll('.item');
+  let orderList = "";
+  let extraList = "";
+  let idx = 1;
+  const colorMap = {
+    clear: '투명',
+    white: '흰색',
+    black: '검정',
+    red: '빨강',
+    orange: '주황',
+    yellow: '노랑',
+    green: '초록',
+    yellowgreen: '연두',
+    blue: '파랑',
+    skyblue: '하늘',
+    pink: '분홍',
+    gray: '회색'
+  };
+  items.forEach((item) => {
+    if (item.classList.contains('extraItem')) {
+      // DIY 추가상품
+      const name = item.querySelector('.extraName').innerText;
+      const qty = item.querySelector('.extraQty').value;
+      if (qty > 0) {
+        extraList += `${name} / 수량: ${qty}\n`;
+      }
+    } else {
+      // 판재 견적
+      const colorVal = item.querySelector('.color').value || '';
+      const color = colorVal ? `${colorMap[colorVal] || ''} (${colorVal})` : '';
+      const thick = item.querySelector('.thick').value || '';
+      const w = item.querySelector('.w').value || 0;
+      const h = item.querySelector('.h').value || 0;
+      const q = item.querySelector('.qty').value || 0;
+      const price = item.querySelector('.linePrice').innerText || '0원';
+      orderList += `
+[${idx++}번]
+색상: ${color}
+두께: ${thick}
+가로: ${w} mm / 세로: ${h} mm
+수량: ${q}
+금액: ${price}
+`;
+    }
+  });
+  const totalText = document.getElementById('result').innerText;
+  let content = `[아크릴샵.아크릴 재단 견적 요청]
 
-// 색상 선택에 따라 두께 옵션 동적 필터링 및 활성화
-document.getElementById('color').addEventListener('change', function() {
-  const colorSelect = document.getElementById('color');
-  const preview = document.getElementById('colorPreview');
-  const thickSelect = document.getElementById('thick');
-  if (colorSelect.value) {
-    thickSelect.disabled = false;
-    updateThickOptionsForColor();
-  } else {
-    thickSelect.disabled = true;
+■ 주문 내역
+${orderList}
+
+■ 추가상품
+${extraList || '없음'}
+
+■ 총 금액
+${totalText}
+배송비: 별도
+
+■ 고객 정보
+이름:
+연락처:
+배송지:
+
+■ 요청사항
+`;
+  let subject = encodeURIComponent("아크릴샵.아크릴 재단 견적 요청");
+  let body = encodeURIComponent(content);
+  // ===== 메일 앱 시도 =====
+  const mailtoLink = `mailto:tk7708@daum.net?subject=${subject}&body=${body}`;
+  window.location.href = mailtoLink;
+  // ===== fallback: 클립보드 복사 =====
+  setTimeout(() => {
+    navigator.clipboard.writeText(content).then(() => {
+      alert("메일 앱이 없을 경우를 대비해 내용이 복사되었습니다.\n카카오톡, 문자, 메일 등에 붙여넣어 보내주세요.");
+    }).catch(() => {
+      alert("메일 앱이 없을 경우 수동으로 복사해서 보내주세요.");
+    });
+  }, 500);
+}
+
+</script>
+<script>
+// Start with one row
+addItem();
+
+// DIY 추가상품 펼침/감춤
+const toggleBtn = document.getElementById('toggleExtraListBtn');
+const expandList = document.getElementById('extraExpandList');
+let isExpanded = false;
+toggleBtn.addEventListener('click', function() {
+  isExpanded = !isExpanded;
+  expandList.style.display = isExpanded ? 'block' : 'none';
+  toggleBtn.innerHTML = isExpanded ? 'DIY 추가상품 선택하기 ▲' : 'DIY 추가상품 선택하기 ▼';
+});
+// DIY 추가상품 버튼 이벤트 (이벤트 위임)
+expandList.addEventListener('click', function(e) {
+  const btn = e.target.closest('.addExtraBtn');
+  if (!btn) return;
+  const name = btn.dataset.name;
+  const price = btn.dataset.price;
+  // 이미 같은 상품이 추가되어 있는지 확인
+  const existing = Array.from(document.querySelectorAll('.extraItem')).find(function(item){
+    return item.dataset.name === name;
+  });
+  if (existing) {
+    // 이미 있으면 수량 1 증가
+    const qtyInput = existing.querySelector('.extraQty');
+    qtyInput.value = parseInt(qtyInput.value) + 1;
+    calcTotal();
+    qtyInput.focus();
+    return;
   }
-  if (colorSelect.value) {
-    // 이미지 파일명 매핑
-    const imageMap = {
-      clear: "clear.png",
-      white: "white.png",
-      black: "black.png",
-      red: "red.png",
-      orange: "orange.png",
-      yellow: "yellow.png",
-      green: "green.png",
-      lime: "yellowgreen.png",
-      blue: "blue.png",
-      sky: "skyblue.png",
-      pink: "pink.png",
-      gray: "gray.png"
-    };
-    preview.src = imageMap[colorSelect.value] || (colorSelect.value + ".png");
-    preview.style.display = "block";
-  } else {
-    preview.style.display = "none";
-  }
-  calcPrice();
+  // 생성
+  const div = document.createElement('div');
+  div.className = 'item extraItem';
+  div.dataset.name = name;
+  div.dataset.price = price;
+  div.style.border = '1px solid #ddd';
+  div.style.padding = '10px';
+  div.style.marginTop = '10px';
+  div.innerHTML = `
+    <span class="extraName" style="flex:2;">${name}</span>
+    <input type="number" class="extraQty" min="1" value="1" style="width:60px;">
+    <div class="linePrice" style="min-width:90px; text-align:right; font-weight:bold;">${parseInt(price).toLocaleString()} 원</div>
+    <button type="button" onclick="this.parentElement.remove(); calcTotal();">삭제</button>
+  `;
+  // 수량 변경시 합계 반영
+  div.querySelector('.extraQty').addEventListener('input', function(){
+    if (this.value < 1) this.value = 1;
+    calcTotal();
+  });
+  document.getElementById('extraItems').appendChild(div);
+  calcTotal();
 });
-
-// 두께 select 변경 시 가격 계산
-document.getElementById('thick').addEventListener('change', function() {
-  calcPrice();
-});
-
-// thick, color 초기 상태 세팅
-document.getElementById('thick').disabled = true;
 </script>
 </script>
 <div style="display: flex; justify-content: center; align-items: center; gap: 40px; margin-top: 24px; flex-wrap: wrap;">
