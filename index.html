@@ -5,17 +5,71 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>아크릴 자동견적 계산기</title>
 <style>
-body { font-family:sans-serif; padding:20px; max-width:500px; margin:auto; }
-label { display:block; margin-top:10px; font-weight:bold; }
-input, select { width:100%; padding:8px; margin-top:4px; border:1px solid #ccc; box-sizing:border-box; }
-#result { margin-top:20px; font-size:1.5em; color:#111; }
-.notice { color:red; font-size:13px; margin-top:10px; font-weight:bold; }
-
+body {
+  font-family: 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
+  padding: 24px 24px 20px 24px;
+  max-width: 900px;
+  margin: auto;
+  background: #f7f8fa;
+  width: 100%;
+  box-sizing: border-box;
+}
+label {
+  display: block;
+  margin-top: 12px;
+  font-weight: bold;
+  color: #222;
+  letter-spacing: 0.01em;
+}
+input, select {
+  width: 100%;
+  padding: 9px 10px;
+  margin-top: 4px;
+  border: 1.5px solid #d3d7e0;
+  border-radius: 6px;
+  box-sizing: border-box;
+  background: #fff;
+  font-size: 1em;
+  transition: border-color 0.2s;
+}
+input:focus, select:focus {
+  border-color: #6c90ff;
+  outline: none;
+}
+#result {
+  margin-top: 28px;
+  font-size: 2em;
+  color: #28a745;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+  background: #eafbe7;
+  border-radius: 12px;
+  padding: 18px 0;
+  box-shadow: 0 2px 10px 0 rgba(40,167,69,0.07);
+  text-align: center;
+}
+.notice {
+  color: #e23d3d;
+  font-size: 13px;
+  margin-top: 14px;
+  font-weight: bold;
+  background: #fff5f5;
+  border-radius: 6px;
+  padding: 10px 12px;
+  line-height: 1.6;
+}
 .item {
   display: flex;
-  gap: 6px;
+  gap: 10px;
   align-items: center;
   flex-wrap: nowrap;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px 0 rgba(0,0,0,0.08);
+  padding: 16px 10px 14px 10px;
+  margin-top: 14px;
+  border: none;
+  transition: box-shadow 0.18s;
 }
 .item select,
 .item input {
@@ -26,9 +80,196 @@ input, select { width:100%; padding:8px; margin-top:4px; border:1px solid #ccc; 
   min-width: 90px;
   text-align: right;
   font-weight: bold;
+  color: #28a745;
+  font-size: 1.07em;
 }
+/* 삭제 버튼(아이템 내부) */
 .item button {
   flex: none;
+  background: #e3f6e8;
+  border: none;
+  border-radius: 5px;
+  padding: 7px 16px;
+  color: #237035;
+  font-weight: bold;
+  font-size: 0.97em;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.item button:hover {
+  background: #c3ecd0;
+}
+button,
+button.addExtraBtn {
+  background: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 12px 0;
+  font-size: 1.08em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.18s;
+  box-shadow: 0 2px 6px 0 rgba(40,167,69,0.09);
+}
+button:hover,
+button.addExtraBtn:hover {
+  background: #218838;
+}
+button.addExtraBtn {
+  padding: 7px 0;
+  font-size: 1em;
+  width: 100%;
+  margin-bottom: 4px;
+  box-shadow: none;
+}
+#colorPreview {
+  display: block;
+  margin: 0 auto 18px auto !important;
+  width: 180px;
+  height: auto;
+  border-radius: 10px;
+  border: 1.5px solid #e0e6f6;
+  box-shadow: 0 2px 10px 0 rgba(34,85,230,0.08);
+  object-fit: contain;
+}
+#items, #extraItems {
+  margin-top: 0;
+}
+fieldset#extras {
+  margin-top: 30px;
+  border: 1.5px solid #d3d7e0;
+  border-radius: 12px;
+  padding: 22px 14px 12px 14px;
+  background: #f9fbfe;
+  box-shadow: 0 2px 10px 0 rgba(0,0,0,0.04);
+}
+#extras legend {
+  font-size: 1.08em;
+  font-weight: bold;
+  padding: 0 10px;
+  color: #28a745;
+}
+#extras .extra-main-row {
+  margin-bottom: 10px;
+}
+#extras .extra-expand-list {
+  display: none;
+  margin-top: 8px;
+  padding-left: 0;
+  overflow: hidden;
+  transition: max-height 0.36s cubic-bezier(0.4,0,0.2,1);
+  max-height: 0;
+}
+#extras .extra-expand-list.show {
+  display: block;
+  max-height: 800px;
+}
+#extras .extra-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: normal;
+  margin-bottom: 6px;
+  background: #fff;
+  border-radius: 7px;
+  box-shadow: 0 1px 6px 0 rgba(0,0,0,0.06);
+  padding: 7px 10px;
+}
+#extras .extra-expand-list .extra-row:last-child {
+  margin-bottom: 0;
+}
+#extras button.addExtraBtn {
+  background: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 0.98em;
+  padding: 6px 14px;
+  min-width: 65px;
+  margin-left: auto;
+  transition: background 0.18s;
+}
+#extras button.addExtraBtn:hover {
+  background: #218838;
+}
+.extraItem .extraName {
+  font-weight: 500;
+  color: #2d3748;
+  flex: 2;
+}
+.extraItem .extraQty {
+  width: 60px;
+  border-radius: 5px;
+  border: 1.2px solid #d3d7e0;
+  padding: 6px 8px;
+  font-size: 1em;
+  margin: 0 8px;
+  background: #f7f8fa;
+}
+.extraItem .linePrice {
+  min-width: 90px;
+  text-align: right;
+  font-weight: bold;
+  color: #28a745;
+  font-size: 1.07em;
+}
+.extraItem button {
+  background: #e3f6e8;
+  color: #237035;
+  border: none;
+  border-radius: 5px;
+  padding: 7px 14px;
+  font-weight: bold;
+  font-size: 0.97em;
+  cursor: pointer;
+  margin-left: 6px;
+  transition: background 0.18s;
+}
+.extraItem button:hover {
+  background: #c3ecd0;
+}
+h3 {
+  text-align: center;
+  margin-top: 18px;
+  margin-bottom: 0;
+  font-size: 1.26em;
+  color: #222;
+  letter-spacing: 0.01em;
+}
+#result + button {
+  margin-top: 14px;
+  width: 100%;
+  padding: 14px 0;
+  font-size: 1.13em;
+  background: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  box-shadow: 0 2px 8px 0 rgba(40,167,69,0.08);
+}
+#result + button:hover {
+  background: #218838;
+}
+.notice[style] {
+  font-size: 14px !important;
+  color: #e23d3d !important;
+  margin-top: 7px !important;
+  background: #fff5f5;
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+@media (max-width: 600px) {
+  body {
+    padding: 10px 2vw 16px 2vw;
+    max-width: 100%;
+  }
+  #colorPreview {
+    width: 98vw;
+    max-width: 180px;
+  }
 }
 </style>
 </head>
@@ -40,50 +281,18 @@ input, select { width:100%; padding:8px; margin-top:4px; border:1px solid #ccc; 
 
 <h3 style="text-align:center;">아크릴판 재단 자동견적 계산기</h3>
 <div style="text-align:center; margin-top:10px;">
-  <img id="colorPreview" src="" alt="색상 미리보기" style="width:180px; height:auto; display:none; margin:0 auto;">
+  <img id="colorPreview" src="" alt="색상 미리보기" style="display:none;">
 </div>
 
-<button onclick="addItem()" style="margin-top:10px; width:100%; padding:10px;">
-+ 아크릴판 재단 견적 추가
+<button onclick="addItem()" style="margin-top:14px;">
+  + 아크릴판 재단 견적 추가
 </button>
 <div id="items"></div>
 
-<fieldset id="extras" style="margin-top:30px; border:1px solid #ccc; border-radius:8px; padding:18px 16px 14px 16px;">
-  <legend style="font-size:1.08em; font-weight:bold; padding:0 10px;">DIY 추가상품</legend>
-  <style>
-  #extras {
-    display: block;
-    margin-top: 0 !important;
-  }
-  #extras .extra-main-row {
-    margin-bottom: 6px;
-  }
-  #extras .extra-expand-list {
-    display: none;
-    margin-top: 6px;
-    padding-left: 0;
-  }
-  #extras .extra-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: normal;
-    margin-bottom: 2px;
-  }
-  #extras button.addExtraBtn {
-    padding: 4px 10px;
-    border: 1px solid #bbb;
-    border-radius: 4px;
-    background: #f6f6f6;
-    cursor: pointer;
-    font-size: 0.98em;
-  }
-  #extras .extra-expand-list .extra-row:last-child {
-    margin-bottom: 0;
-  }
-  </style>
+<fieldset id="extras">
+  <legend>DIY 추가상품</legend>
   <div class="extra-main-row">
-    <button type="button" id="toggleExtraListBtn" class="addExtraBtn" style="width:100%;font-weight:bold;">
+    <button type="button" id="toggleExtraListBtn" class="addExtraBtn">
       DIY 추가상품 선택하기 ▼
     </button>
   </div>
@@ -126,10 +335,8 @@ input, select { width:100%; padding:8px; margin-top:4px; border:1px solid #ccc; 
 </div>
 
 <h2 id="result">총합 가격: 0 원</h2>
-<button onclick="sendEmail()" style="margin-top:10px; width:100%; padding:12px; font-size:16px;">
-견적 메일 보내기
-</button>
-<div class="notice" style="margin-top:5px; font-size:14px;">※ 배송비 별도</div>
+<button onclick="sendEmail()">견적 메일 보내기</button>
+<div class="notice" style="margin-top:7px; font-size:14px;">※ 배송비 별도</div>
 
 <script>
 function addItem() {
@@ -554,8 +761,10 @@ function sendEmail() {
       // DIY 추가상품
       const name = item.querySelector('.extraName').innerText;
       const qty = item.querySelector('.extraQty').value;
+      const price = item.dataset.price ? parseInt(item.dataset.price) : 0;
+      const linePrice = item.querySelector('.linePrice')?.innerText || '';
       if (qty > 0) {
-        extraList += `${name} / 수량: ${qty}\n`;
+        extraList += `${name} / 수량: ${qty} / 금액: ${linePrice || (price * qty).toLocaleString() + '원'}\n`;
       }
     } else {
       // 판재 견적
@@ -615,14 +824,19 @@ ${totalText}
 // Start with one row
 addItem();
 
-// DIY 추가상품 펼침/감춤
+// DIY 추가상품 펼침/감춤 (애니메이션)
 const toggleBtn = document.getElementById('toggleExtraListBtn');
 const expandList = document.getElementById('extraExpandList');
 let isExpanded = false;
 toggleBtn.addEventListener('click', function() {
   isExpanded = !isExpanded;
-  expandList.style.display = isExpanded ? 'block' : 'none';
-  toggleBtn.innerHTML = isExpanded ? 'DIY 추가상품 선택하기 ▲' : 'DIY 추가상품 선택하기 ▼';
+  if (isExpanded) {
+    expandList.classList.add('show');
+    toggleBtn.innerHTML = 'DIY 추가상품 선택하기 ▲';
+  } else {
+    expandList.classList.remove('show');
+    toggleBtn.innerHTML = 'DIY 추가상품 선택하기 ▼';
+  }
 });
 // DIY 추가상품 버튼 이벤트 (이벤트 위임)
 expandList.addEventListener('click', function(e) {
@@ -680,7 +894,7 @@ expandList.addEventListener('click', function(e) {
 
 </div>
 <div style="text-align:center; margin-top:30px;">
-  <img src="contact.png" alt="연락처" style="width:100%; max-width:500px; height:auto;">
+  <img src="contact.png" alt="연락처" style="width:100%; height:auto; display:block; margin:0; padding:0; border:none;">
 </div>
 <footer style="font-size:12px; color:#555; text-align:center; margin-top:40px; padding:16px 0 8px 0; white-space:nowrap;">
   © TAEKWANG. 상호: 태광아크릴 | 대표: 김정미 | 이메일: tk7708@daum.net | 사업자등록번호: 502-16-57086
